@@ -1,6 +1,4 @@
 // Copyright (c) 2014 Takuya Asano All Rights Reserved.
-
-
 "use strict";
 
 const TERM_CHAR = "\u0000", // terminal character
@@ -765,12 +763,12 @@ const utf8BytesToString = (bytes) => {
 
 
 // public methods
-let doublearray = {
-  builder: function (initial_size) {
+const doublearray = {
+  builder:  (initial_size) => {
     return new DoubleArrayBuilder(initial_size);
   },
-  load: function (base_buffer, check_buffer) {
-    var bc = newBC(0);
+  load:  (base_buffer, check_buffer) => {
+    let bc = newBC(0);
     bc.loadBaseBuffer(base_buffer);
     bc.loadCheckBuffer(check_buffer);
     return new DoubleArray(bc);
