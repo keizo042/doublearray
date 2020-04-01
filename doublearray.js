@@ -142,6 +142,20 @@
       this.base.array = this.base.array.subarray(0, last_index + 2);   // keep last unused node
       this.check.array = this.check.array.subarray(0, last_index + 2); // keep last unused node
     }
+    calc () {
+      let unused_count = 0;
+      let size = this.check.array.length;
+      for (let i = 0; i < size; i++) {
+        if (this.check.array[i] < 0) {
+          unused_count++;
+        }
+      }
+      return {
+        all: size,
+        unused: unused_count,
+        efficiency: (size - unused_count) / size
+      };
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -189,18 +203,7 @@
         bc.shrink();
       },
       calc: function () {
-        let unused_count = 0;
-        let size = bc.check.array.length;
-        for (let i = 0; i < size; i++) {
-          if (bc.check.array[i] < 0) {
-            unused_count++;
-          }
-        }
-        return {
-          all: size,
-          unused: unused_count,
-          efficiency: (size - unused_count) / size
-        };
+        return bc.calc();
       },
       dump: function () {
         // for debug
