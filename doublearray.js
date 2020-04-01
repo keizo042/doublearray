@@ -201,7 +201,7 @@
       this.bc = newBC(initial_size);  // BASE and CHECK
       this.keys = [];
     }
-    
+
     /**
      * Append a key to initialize set
      * (This method should be called by dictionary ordered key)
@@ -210,8 +210,8 @@
      * @param {Number} value Integer value from 0 to max signed integer number - 1
      */
     append(key,record){
-        this.keys.push({ k: key, v: record });
-        return this;
+      this.keys.push({ k: key, v: record });
+      return this;
     }
 
     /**
@@ -223,50 +223,50 @@
      */
     build(keys, sorted){
 
-        if (keys == null) {
-            keys = this.keys;
-        }
+      if (keys == null) {
+        keys = this.keys;
+      }
 
-        if (keys == null) {
-            return new DoubleArray(this.bc);
-        }
-
-        if (sorted == null) {
-            sorted = false;
-        }
-
-        // Convert key string to ArrayBuffer
-        let buff_keys =
-            keys.map((k) => {
-                return {
-                    k: stringToUtf8Bytes(k.k + TERM_CHAR),
-                    v: k.v
-                };
-            });
-
-        // Sort keys by byte order
-        if (sorted) {
-            this.keys = buff_keys;
-        } else {
-            this.keys =
-                buff_keys.sort((k1, k2) => {
-                    let b1 = k1.k;
-                    let b2 = k2.k;
-                    let min_length = Math.min(b1.length, b2.length);
-                    for (let pos = 0; pos < min_length; pos++) {
-                        if (b1[pos] === b2[pos]) {
-                            continue;
-                        }
-                        return b1[pos] - b2[pos];
-                    }
-                    return b1.length - b2.length;
-                });
-        }
-
-        buff_keys = null;  // explicit GC
-
-        this._build(ROOT_ID, 0, 0, this.keys.length);
+      if (keys == null) {
         return new DoubleArray(this.bc);
+      }
+
+      if (sorted == null) {
+        sorted = false;
+      }
+
+      // Convert key string to ArrayBuffer
+      let buff_keys =
+        keys.map((k) => {
+          return {
+            k: stringToUtf8Bytes(k.k + TERM_CHAR),
+            v: k.v
+          };
+        });
+
+      // Sort keys by byte order
+      if (sorted) {
+        this.keys = buff_keys;
+      } else {
+        this.keys =
+          buff_keys.sort((k1, k2) => {
+            let b1 = k1.k;
+            let b2 = k2.k;
+            let min_length = Math.min(b1.length, b2.length);
+            for (let pos = 0; pos < min_length; pos++) {
+              if (b1[pos] === b2[pos]) {
+                continue;
+              }
+              return b1[pos] - b2[pos];
+            }
+            return b1.length - b2.length;
+          });
+      }
+
+      buff_keys = null;  // explicit GC
+
+      this._build(ROOT_ID, 0, 0, this.keys.length);
+      return new DoubleArray(this.bc);
     }
 
     /**
@@ -292,145 +292,145 @@
     }
 
     getChildrenInfo(position, start, length){
-        let current_char = this.keys[start].k[position];
-        let i = 0;
-        let children_info = new Int32Array(length * 3);
+      let current_char = this.keys[start].k[position];
+      let i = 0;
+      let children_info = new Int32Array(length * 3);
 
-        children_info[i++] = current_char;  // char (current)
-        children_info[i++] = start;         // start index (current)
+      children_info[i++] = current_char;  // char (current)
+      children_info[i++] = start;         // start index (current)
 
-        let next_pos = start;
-        let start_pos = start;
-        for (; next_pos < start + length; next_pos++) {
-            let next_char = this.keys[next_pos].k[position];
-            if (current_char !== next_char) {
-                children_info[i++] = next_pos - start_pos;  // length (current)
+      let next_pos = start;
+      let start_pos = start;
+      for (; next_pos < start + length; next_pos++) {
+        let next_char = this.keys[next_pos].k[position];
+        if (current_char !== next_char) {
+          children_info[i++] = next_pos - start_pos;  // length (current)
 
-                children_info[i++] = next_char;             // char (next)
-                children_info[i++] = next_pos;              // start index (next)
-                current_char = next_char;
-                start_pos = next_pos;
-            }
+          children_info[i++] = next_char;             // char (next)
+          children_info[i++] = next_pos;              // start index (next)
+          current_char = next_char;
+          start_pos = next_pos;
         }
-        children_info[i++] = next_pos - start_pos;
-        children_info = children_info.subarray(0, i);
+      }
+      children_info[i++] = next_pos - start_pos;
+      children_info = children_info.subarray(0, i);
 
-        return children_info;
+      return children_info;
     }
 
     setBC(parent_id, children_info, _base){
 
-        let bc = this.bc;
+      let bc = this.bc;
 
-        bc.setBase(parent_id, _base);  // Update BASE of parent node
+      bc.setBase(parent_id, _base);  // Update BASE of parent node
 
-        let i;
-        for (i = 0; i < children_info.length; i = i + 3) {
-            let code = children_info[i];
-            let child_id = _base + code;
+      let i;
+      for (i = 0; i < children_info.length; i = i + 3) {
+        let code = children_info[i];
+        let child_id = _base + code;
 
-            // Update linked list of unused nodes
+        // Update linked list of unused nodes
 
-            // Assertion
-            // if (child_id < 0) {
-            //     throw 'assertion error: child_id is negative'
-            // }
+        // Assertion
+        // if (child_id < 0) {
+        //     throw 'assertion error: child_id is negative'
+        // }
 
-            let prev_unused_id = - bc.getBase(child_id);
-            let next_unused_id = - bc.getCheck(child_id);
-            // if (prev_unused_id < 0) {
-            //     throw 'assertion error: setBC'
-            // }
-            // if (next_unused_id < 0) {
-            //     throw 'assertion error: setBC'
-            // }
-            if (child_id !== bc.getFirstUnusedNode()) {
-                bc.setCheck(prev_unused_id, - next_unused_id);
-            } else {
-                // Update first_unused_node
-                bc.setFirstUnusedNode(next_unused_id);
-            }
-            bc.setBase(next_unused_id, - prev_unused_id);
-
-            let check = parent_id;         // CHECK is parent node index
-            bc.setCheck(child_id, check);  // Update CHECK of child node
-
-            // Update record
-            if (code === TERM_CODE) {
-                let start_pos = children_info[i + 1];
-                // let len = children_info[i + 2];
-                // if (len != 1) {
-                //     throw 'assertion error: there are multiple terminal nodes. len:' + len;
-                // }
-                let value = this.keys[start_pos].v;
-
-                if (value == null) {
-                    value = 0;
-                }
-
-                let base = - value - 1;       // BASE is inverted record value
-                bc.setBase(child_id, base);  // Update BASE of child(leaf) node
-            }
+        let prev_unused_id = - bc.getBase(child_id);
+        let next_unused_id = - bc.getCheck(child_id);
+        // if (prev_unused_id < 0) {
+        //     throw 'assertion error: setBC'
+        // }
+        // if (next_unused_id < 0) {
+        //     throw 'assertion error: setBC'
+        // }
+        if (child_id !== bc.getFirstUnusedNode()) {
+          bc.setCheck(prev_unused_id, - next_unused_id);
+        } else {
+          // Update first_unused_node
+          bc.setFirstUnusedNode(next_unused_id);
         }
+        bc.setBase(next_unused_id, - prev_unused_id);
+
+        let check = parent_id;         // CHECK is parent node index
+        bc.setCheck(child_id, check);  // Update CHECK of child node
+
+        // Update record
+        if (code === TERM_CODE) {
+          let start_pos = children_info[i + 1];
+          // let len = children_info[i + 2];
+          // if (len != 1) {
+          //     throw 'assertion error: there are multiple terminal nodes. len:' + len;
+          // }
+          let value = this.keys[start_pos].v;
+
+          if (value == null) {
+            value = 0;
+          }
+
+          let base = - value - 1;       // BASE is inverted record value
+          bc.setBase(child_id, base);  // Update BASE of child(leaf) node
+        }
+      }
     }
 
     /**
      * Find BASE value that all children are allocatable in double array's region
      */
     findAllocatableBase(children_info){
-        let bc = this.bc;
+      let bc = this.bc;
 
-        // Assertion: keys are sorted by byte order
-        // let c = -1;
-        // for (let i = 0; i < children_info.length; i = i + 3) {
-        //     if (children_info[i] < c) {
-        //         throw 'assertion error: not sort key'
-        //     }
-        //     c = children_info[i];
-        // }
+      // Assertion: keys are sorted by byte order
+      // let c = -1;
+      // for (let i = 0; i < children_info.length; i = i + 3) {
+      //     if (children_info[i] < c) {
+      //         throw 'assertion error: not sort key'
+      //     }
+      //     c = children_info[i];
+      // }
 
-        // iterate linked list of unused nodes
-        let _base;
-        let curr = bc.getFirstUnusedNode();  // current index
-        // if (curr < 0) {
-        //     throw 'assertion error: getFirstUnusedNode returns negative value'
-        // }
+      // iterate linked list of unused nodes
+      let _base;
+      let curr = bc.getFirstUnusedNode();  // current index
+      // if (curr < 0) {
+      //     throw 'assertion error: getFirstUnusedNode returns negative value'
+      // }
 
-        while (true) {
-            _base = curr - children_info[0];
+      while (true) {
+        _base = curr - children_info[0];
 
-            if (_base < 0) {
-                curr = - bc.getCheck(curr);  // next
+        if (_base < 0) {
+          curr = - bc.getCheck(curr);  // next
 
-                // if (curr < 0) {
-                //     throw 'assertion error: getCheck returns negative value'
-                // }
+          // if (curr < 0) {
+          //     throw 'assertion error: getCheck returns negative value'
+          // }
 
-                continue;
-            }
-
-            let empty_area_found = true;
-            for (let i = 0; i < children_info.length; i = i + 3) {
-                let code = children_info[i];
-                let candidate_id = _base + code;
-
-                if (!this.isUnusedNode(candidate_id)) {
-                    // candidate_id is used node
-                    // next
-                    curr = - bc.getCheck(curr);
-                    // if (curr < 0) {
-                    //     throw 'assertion error: getCheck returns negative value'
-                    // }
-
-                    empty_area_found = false;
-                    break;
-                }
-            }
-            if (empty_area_found) {
-                // Area is free
-                return _base;
-            }
+          continue;
         }
+
+        let empty_area_found = true;
+        for (let i = 0; i < children_info.length; i = i + 3) {
+          let code = children_info[i];
+          let candidate_id = _base + code;
+
+          if (!this.isUnusedNode(candidate_id)) {
+            // candidate_id is used node
+            // next
+            curr = - bc.getCheck(curr);
+            // if (curr < 0) {
+            //     throw 'assertion error: getCheck returns negative value'
+            // }
+
+            empty_area_found = false;
+            break;
+          }
+        }
+        if (empty_area_found) {
+          // Area is free
+          return _base;
+        }
+      }
     }
 
     /**
