@@ -427,32 +427,31 @@ class DoubleArrayBuilder {
       }
     }
   }
-}
 
-/**
- * Check this double array index is unused or not
- */
-DoubleArrayBuilder.prototype.isUnusedNode =  (index) => {
-  let bc = this.bc;
-  let check = bc.getCheck(index);
+  /**
+   * Check this double array index is unused or not
+   */
+  isUnusedNode(index){
+    let bc = this.bc;
+    let check = bc.getCheck(index);
 
-  // if (index < 0) {
-  //     throw 'assertion error: isUnusedNode index:' + index;
-  // }
+    // if (index < 0) {
+    //     throw 'assertion error: isUnusedNode index:' + index;
+    // }
 
-  if (index === ROOT_ID) {
-    // root node
+    if (index === ROOT_ID) {
+      // root node
+      return false;
+    }
+    if (check < 0) {
+      // unused
+      return true;
+    }
+
+    // used node (incl. leaf)
     return false;
   }
-  if (check < 0) {
-    // unused
-    return true;
-  }
-
-  // used node (incl. leaf)
-  return false;
-};
-
+}
 
 /**
  * Factory method of double array
