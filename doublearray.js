@@ -201,9 +201,7 @@
       this.bc = newBC(initial_size);  // BASE and CHECK
       this.keys = [];
     }
-  }
-
-
+    
     /**
      * Append a key to initialize set
      * (This method should be called by dictionary ordered key)
@@ -211,10 +209,10 @@
      * @param {String} key
      * @param {Number} value Integer value from 0 to max signed integer number - 1
      */
-    DoubleArrayBuilder.prototype.append = function (key, record) {
+    append(key,record){
         this.keys.push({ k: key, v: record });
         return this;
-    };
+    }
 
     /**
      * Build double array for given keys
@@ -223,7 +221,7 @@
      * 'k' is a key string, 'v' is a record assigned to that key.
      * @return {DoubleArray} Compiled double array
      */
-    DoubleArrayBuilder.prototype.build = function (keys, sorted) {
+    build(keys, sorted){
 
         if (keys == null) {
             keys = this.keys;
@@ -269,7 +267,8 @@
 
         this._build(ROOT_ID, 0, 0, this.keys.length);
         return new DoubleArray(this.bc);
-    };
+    }
+  }
 
     /**
      * Append nodes to BASE and CHECK array recursively
