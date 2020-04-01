@@ -449,7 +449,7 @@
     }
   }
 
-  class DoubleArray{
+  class DoubleArray {
     constructor(bc){
       this.bc = bc;       // BASE and CHECK
       this.bc.shrink();
