@@ -634,7 +634,7 @@
         }
     };
 
-    let arrayCopy = function (src, src_offset, length) {
+    const arrayCopy = (src, src_offset, length) => {
         let buffer = new ArrayBuffer(length);
         let dstU8 = new Uint8Array(buffer, 0, length);
         let srcU8 = src.subarray(src_offset, length);
@@ -649,7 +649,7 @@
      * @param {String} str UTF-16 string to convert
      * @return {Uint8Array} Byte sequence encoded by UTF-8
      */
-    let stringToUtf8Bytes = function (str) {
+    const stringToUtf8Bytes =  (str) => {
 
         // Max size of 1 character is 4 bytes
         let bytes = new Uint8Array(new ArrayBuffer(str.length * 4));
@@ -715,7 +715,7 @@
      * @param {Uint8Array} bytes UTF-8 byte sequence to convert
      * @return {String} String encoded by UTF-16
      */
-    let utf8BytesToString = function (bytes) {
+    const utf8BytesToString =  (bytes) => {
 
         let str = "";
         let code, b1, b2, b3, b4, upper, lower;
@@ -762,10 +762,10 @@
 
     // public methods
     const doublearray = {
-        builder: function (initial_size) {
+        builder:  (initial_size) => {
             return new DoubleArrayBuilder(initial_size);
         },
-        load: function (base_buffer, check_buffer) {
+        load:  (base_buffer, check_buffer) => {
             let bc = newBC(0);
             bc.loadBaseBuffer(base_buffer);
             bc.loadCheckBuffer(check_buffer);
