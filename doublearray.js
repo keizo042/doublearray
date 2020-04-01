@@ -432,12 +432,11 @@
             }
         }
     }
-  }
 
     /**
      * Check this double array index is unused or not
      */
-    DoubleArrayBuilder.prototype.isUnusedNode = function (index) {
+    isUnusedNode(index){
         let bc = this.bc;
         let check = bc.getCheck(index);
 
@@ -456,8 +455,8 @@
 
         // used node (incl. leaf)
         return false;
-    };
-
+    }
+  }
 
     /**
      * Factory method of double array
