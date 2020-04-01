@@ -16,7 +16,7 @@
     MEMORY_EXPAND_RATIO = 2;
 
 
-  class BC{
+  class BC {
 
     constructor(initial_size, first_unused_node){
       let base = {
