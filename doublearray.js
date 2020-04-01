@@ -317,9 +317,8 @@
 
         return children_info;
     }
-  }
 
-    DoubleArrayBuilder.prototype.setBC = function (parent_id, children_info, _base) {
+    setBC(parent_id, children_info, _base){
 
         let bc = this.bc;
 
@@ -373,8 +372,8 @@
                 bc.setBase(child_id, base);  // Update BASE of child(leaf) node
             }
         }
-    };
-
+    }
+  }
 
     /**
      * Find BASE value that all children are allocatable in double array's region
