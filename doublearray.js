@@ -15,7 +15,7 @@
         MEMORY_EXPAND_RATIO = 2;
 
 
-    let newBC = function (initial_size) {
+    const newBC = (initial_size) => {
 
         if (initial_size == null) {
             initial_size = 1024;
