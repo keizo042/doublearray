@@ -543,32 +543,32 @@
         let code = buffer[i];
 
         child = this.traverse(parent, code);
-
-        if (child !== NOT_FOUND) {
-          parent = child;
-
-          // look forward by terminal character code to check this node is a leaf or not
-          let grand_child = this.traverse(child, TERM_CODE);
-
-          if (grand_child !== NOT_FOUND) {
-            let base = this.bc.getBase(grand_child);
-
-            let r = {};
-
-            if (base <= 0) {
-              // If child is a leaf node, add record to result
-              r.v = - base - 1;
-            }
-
-            // If child is a leaf node, add word to result
-            r.k = utf8BytesToString(arrayCopy(buffer, 0, i + 1));
-
-            result.push(r);
-          }
-          continue;
-        } else {
+        if (child === NOT_FOUND) {
           break;
         }
+
+        parent = child;
+
+        // look forward by terminal character code to check this node is a leaf or not
+        let grand_child = this.traverse(child, TERM_CODE);
+        if (grand_child === NOT_FOUND) {
+          continue;
+        }
+
+        let base = this.bc.getBase(grand_child);
+
+        let r = {};
+
+        if (base <= 0) {
+          // If child is a leaf node, add record to result
+          r.v = - base - 1;
+        }
+
+        // If child is a leaf node, add word to result
+        r.k = utf8BytesToString(arrayCopy(buffer, 0, i + 1));
+
+        result.push(r);
+        continue;
       }
 
       return result;
