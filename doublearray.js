@@ -20,11 +20,8 @@
     constructor(){
     }
   }
-  const newBC = (initial_size) => {
-
-    if (initial_size == null) {
-      initial_size = DEFAULT_INITIAL_SIZE;
-    }
+  const newBC = (_initial_size) => {
+    let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
 
     const initBase =  (_base, start, end) =>  {  // 'end' index does not include
       for (let i = start; i < end; i++) {
