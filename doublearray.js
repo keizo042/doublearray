@@ -608,7 +608,7 @@
 
     // Array utility functions
 
-    let newArrayBuffer = function (signed, bytes, size) {
+    const newArrayBuffer =  (signed, bytes, size) => {
         if (signed) {
             switch(bytes) {
                 case 1:
