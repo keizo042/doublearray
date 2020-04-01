@@ -264,29 +264,29 @@ class DoubleArrayBuilder {
     this._build(ROOT_ID, 0, 0, this.keys.length);
     return new DoubleArray(this.bc);
   }
-}
 
-/**
- * Append nodes to BASE and CHECK array recursively
- */
-DoubleArrayBuilder.prototype._build = (parent_index, position, start, length) => {
+  /**
+   * Append nodes to BASE and CHECK array recursively
+   */
+  _build(parent_index, position, start, length) {
 
-  let children_info = this.getChildrenInfo(position, start, length);
-  let _base = this.findAllocatableBase(children_info);
+    let children_info = this.getChildrenInfo(position, start, length);
+    let _base = this.findAllocatableBase(children_info);
 
-  this.setBC(parent_index, children_info, _base);
+    this.setBC(parent_index, children_info, _base);
 
-  for (let i = 0; i < children_info.length; i = i + 3) {
-    let child_code = children_info[i];
-    if (child_code === TERM_CODE) {
-      continue;
+    for (let i = 0; i < children_info.length; i = i + 3) {
+      let child_code = children_info[i];
+      if (child_code === TERM_CODE) {
+        continue;
+      }
+      let child_start = children_info[i + 1];
+      let child_len = children_info[i + 2];
+      let child_index = _base + child_code;
+      this._build(child_index, position + 1, child_start, child_len);
     }
-    let child_start = children_info[i + 1];
-    let child_len = children_info[i + 2];
-    let child_index = _base + child_code;
-    this._build(child_index, position + 1, child_start, child_len);
   }
-};
+}
 
 DoubleArrayBuilder.prototype.getChildrenInfo =  (position, start, length) => {
   let current_char = this.keys[start].k[position];
