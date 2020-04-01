@@ -176,11 +176,6 @@
     }
   }
 
-  const newBC = (initial_size) => {
-    return new BC(initial_size);
-  };
-
-
   class DoubleArrayBuilder{
     /**
      * Factory method of double array
