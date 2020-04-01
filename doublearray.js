@@ -4,7 +4,7 @@
 
     "use strict";
 
-    var TERM_CHAR = "\u0000", // terminal character
+    const TERM_CHAR = "\u0000", // terminal character
         TERM_CODE = 0,        // terminal character code
         ROOT_ID = 0,          // index of root node
         NOT_FOUND = -1,       // traverse() returns if no nodes found
@@ -15,18 +15,18 @@
         MEMORY_EXPAND_RATIO = 2;
 
 
-    var newBC = function (initial_size) {
+    let newBC = function (initial_size) {
 
         if (initial_size == null) {
             initial_size = 1024;
         }
 
-        var initBase = function (_base, start, end) {  // 'end' index does not include
-            for (var i = start; i < end; i++) {
+        let initBase = function (_base, start, end) {  // 'end' index does not include
+            for (let i = start; i < end; i++) {
                 _base[i] = - i + 1;  // inversed previous empty node index
             }
             if (0 < check.array[check.array.length - 1]) {
-                var last_used_id = check.array.length - 2;
+                let last_used_id = check.array.length - 2;
                 while (0 < check.array[last_used_id]) {
                     last_used_id--;
                 }
@@ -34,39 +34,39 @@
             }
         };
 
-        var initCheck = function (_check, start, end) {
-            for (var i = start; i < end; i++) {
+        let initCheck = function (_check, start, end) {
+            for (let i = start; i < end; i++) {
                 _check[i] = - i - 1;  // inversed next empty node index
             }
         };
 
-        var realloc = function (min_size) {
+        let realloc = function (min_size) {
             // expand arrays size by given ratio
-            var new_size = min_size * MEMORY_EXPAND_RATIO;
+            let new_size = min_size * MEMORY_EXPAND_RATIO;
             // console.log('re-allocate memory to ' + new_size);
 
-            var base_new_array = newArrayBuffer(base.signed, base.bytes, new_size);
+            let base_new_array = newArrayBuffer(base.signed, base.bytes, new_size);
             initBase(base_new_array, base.array.length, new_size);  // init BASE in new range
             base_new_array.set(base.array);
             base.array = null;  // explicit GC
             base.array = base_new_array;
 
-            var check_new_array = newArrayBuffer(check.signed, check.bytes, new_size);
+            let check_new_array = newArrayBuffer(check.signed, check.bytes, new_size);
             initCheck(check_new_array, check.array.length, new_size);  // init CHECK in new range
             check_new_array.set(check.array);
             check.array = null;  // explicit GC
             check.array = check_new_array;
         };
 
-        var first_unused_node = ROOT_ID + 1;
+        let first_unused_node = ROOT_ID + 1;
 
-        var base = {
+        let base = {
             signed: BASE_SIGNED,
             bytes: BASE_BYTES,
             array: newArrayBuffer(BASE_SIGNED, BASE_BYTES, initial_size)
         };
 
-        var check = {
+        let check = {
             signed: CHECK_SIGNED,
             bytes: CHECK_BYTES,
             array: newArrayBuffer(CHECK_SIGNED, CHECK_BYTES, initial_size)
@@ -147,7 +147,7 @@
                 return first_unused_node;
             },
             shrink: function () {
-                var last_index = this.size() - 1;
+                let last_index = this.size() - 1;
                 while (true) {
                     if (0 <= check.array[last_index]) {
                         break;
@@ -158,9 +158,9 @@
                 check.array = check.array.subarray(0, last_index + 2); // keep last unused node
             },
             calc: function () {
-                var unused_count = 0;
-                var size = check.array.length;
-                for (var i = 0; i < size; i++) {
+                let unused_count = 0;
+                let size = check.array.length;
+                for (let i = 0; i < size; i++) {
                     if (check.array[i] < 0) {
                         unused_count++;
                     }
@@ -173,10 +173,10 @@
             },
             dump: function () {
                 // for debug
-                var dump_base = "";
-                var dump_check = "";
+                let dump_base = "";
+                let dump_check = "";
 
-                var i;
+                let i;
                 for (i = 0; i < base.array.length; i++) {
                     dump_base = dump_base + " " + this.getBase(i);
                 }
@@ -236,7 +236,7 @@
         }
 
         // Convert key string to ArrayBuffer
-        var buff_keys =
+        let buff_keys =
             keys.map(function (k) {
                 return {
                     k: stringToUtf8Bytes(k.k + TERM_CHAR),
@@ -250,10 +250,10 @@
         } else {
             this.keys =
                 buff_keys.sort(function (k1, k2) {
-                    var b1 = k1.k;
-                    var b2 = k2.k;
-                    var min_length = Math.min(b1.length, b2.length);
-                    for (var pos = 0; pos < min_length; pos++) {
+                    let b1 = k1.k;
+                    let b2 = k2.k;
+                    let min_length = Math.min(b1.length, b2.length);
+                    for (let pos = 0; pos < min_length; pos++) {
                         if (b1[pos] === b2[pos]) {
                             continue;
                         }
@@ -274,35 +274,35 @@
      */
     DoubleArrayBuilder.prototype._build = function (parent_index, position, start, length) {
 
-        var children_info = this.getChildrenInfo(position, start, length);
-        var _base = this.findAllocatableBase(children_info);
+        let children_info = this.getChildrenInfo(position, start, length);
+        let _base = this.findAllocatableBase(children_info);
 
         this.setBC(parent_index, children_info, _base);
 
-        for (var i = 0; i < children_info.length; i = i + 3) {
-            var child_code = children_info[i];
+        for (let i = 0; i < children_info.length; i = i + 3) {
+            let child_code = children_info[i];
             if (child_code === TERM_CODE) {
                 continue;
             }
-            var child_start = children_info[i + 1];
-            var child_len = children_info[i + 2];
-            var child_index = _base + child_code;
+            let child_start = children_info[i + 1];
+            let child_len = children_info[i + 2];
+            let child_index = _base + child_code;
             this._build(child_index, position + 1, child_start, child_len);
         }
     };
 
     DoubleArrayBuilder.prototype.getChildrenInfo = function (position, start, length) {
-        var current_char = this.keys[start].k[position];
-        var i = 0;
-        var children_info = new Int32Array(length * 3);
+        let current_char = this.keys[start].k[position];
+        let i = 0;
+        let children_info = new Int32Array(length * 3);
 
         children_info[i++] = current_char;  // char (current)
         children_info[i++] = start;         // start index (current)
 
-        var next_pos = start;
-        var start_pos = start;
+        let next_pos = start;
+        let start_pos = start;
         for (; next_pos < start + length; next_pos++) {
-            var next_char = this.keys[next_pos].k[position];
+            let next_char = this.keys[next_pos].k[position];
             if (current_char !== next_char) {
                 children_info[i++] = next_pos - start_pos;  // length (current)
 
@@ -320,14 +320,14 @@
 
     DoubleArrayBuilder.prototype.setBC = function (parent_id, children_info, _base) {
 
-        var bc = this.bc;
+        let bc = this.bc;
 
         bc.setBase(parent_id, _base);  // Update BASE of parent node
 
-        var i;
+        let i;
         for (i = 0; i < children_info.length; i = i + 3) {
-            var code = children_info[i];
-            var child_id = _base + code;
+            let code = children_info[i];
+            let child_id = _base + code;
 
             // Update linked list of unused nodes
 
@@ -336,8 +336,8 @@
             //     throw 'assertion error: child_id is negative'
             // }
 
-            var prev_unused_id = - bc.getBase(child_id);
-            var next_unused_id = - bc.getCheck(child_id);
+            let prev_unused_id = - bc.getBase(child_id);
+            let next_unused_id = - bc.getCheck(child_id);
             // if (prev_unused_id < 0) {
             //     throw 'assertion error: setBC'
             // }
@@ -352,23 +352,23 @@
             }
             bc.setBase(next_unused_id, - prev_unused_id);
 
-            var check = parent_id;         // CHECK is parent node index
+            let check = parent_id;         // CHECK is parent node index
             bc.setCheck(child_id, check);  // Update CHECK of child node
 
             // Update record
             if (code === TERM_CODE) {
-                var start_pos = children_info[i + 1];
-                // var len = children_info[i + 2];
+                let start_pos = children_info[i + 1];
+                // let len = children_info[i + 2];
                 // if (len != 1) {
                 //     throw 'assertion error: there are multiple terminal nodes. len:' + len;
                 // }
-                var value = this.keys[start_pos].v;
+                let value = this.keys[start_pos].v;
 
                 if (value == null) {
                     value = 0;
                 }
 
-                var base = - value - 1;       // BASE is inverted record value
+                let base = - value - 1;       // BASE is inverted record value
                 bc.setBase(child_id, base);  // Update BASE of child(leaf) node
             }
         }
@@ -380,11 +380,11 @@
      */
     DoubleArrayBuilder.prototype.findAllocatableBase = function (children_info) {
 
-        var bc = this.bc;
+        let bc = this.bc;
 
         // Assertion: keys are sorted by byte order
-        // var c = -1;
-        // for (var i = 0; i < children_info.length; i = i + 3) {
+        // let c = -1;
+        // for (let i = 0; i < children_info.length; i = i + 3) {
         //     if (children_info[i] < c) {
         //         throw 'assertion error: not sort key'
         //     }
@@ -392,8 +392,8 @@
         // }
 
         // iterate linked list of unused nodes
-        var _base;
-        var curr = bc.getFirstUnusedNode();  // current index
+        let _base;
+        let curr = bc.getFirstUnusedNode();  // current index
         // if (curr < 0) {
         //     throw 'assertion error: getFirstUnusedNode returns negative value'
         // }
@@ -411,10 +411,10 @@
                 continue;
             }
 
-            var empty_area_found = true;
-            for (var i = 0; i < children_info.length; i = i + 3) {
-                var code = children_info[i];
-                var candidate_id = _base + code;
+            let empty_area_found = true;
+            for (let i = 0; i < children_info.length; i = i + 3) {
+                let code = children_info[i];
+                let candidate_id = _base + code;
 
                 if (!this.isUnusedNode(candidate_id)) {
                     // candidate_id is used node
@@ -439,8 +439,8 @@
      * Check this double array index is unused or not
      */
     DoubleArrayBuilder.prototype.isUnusedNode = function (index) {
-        var bc = this.bc;
-        var check = bc.getCheck(index);
+        let bc = this.bc;
+        let check = bc.getCheck(index);
 
         // if (index < 0) {
         //     throw 'assertion error: isUnusedNode index:' + index;
@@ -477,16 +477,16 @@
      */
     DoubleArray.prototype.contain = function (key) {
 
-        var bc = this.bc;
+        let bc = this.bc;
 
         key += TERM_CHAR;
-        var buffer = stringToUtf8Bytes(key);
+        let buffer = stringToUtf8Bytes(key);
 
-        var parent = ROOT_ID;
-        var child = NOT_FOUND;
+        let parent = ROOT_ID;
+        let child = NOT_FOUND;
 
-        for (var i = 0; i < buffer.length; i++) {
-            var code = buffer[i];
+        for (let i = 0; i < buffer.length; i++) {
+            let code = buffer[i];
 
             child = this.traverse(parent, code);
             if (child === NOT_FOUND) {
@@ -515,13 +515,13 @@
     DoubleArray.prototype.lookup = function (key) {
 
         key += TERM_CHAR;
-        var buffer = stringToUtf8Bytes(key);
+        let buffer = stringToUtf8Bytes(key);
 
-        var parent = ROOT_ID;
-        var child = NOT_FOUND;
+        let parent = ROOT_ID;
+        let child = NOT_FOUND;
 
-        for (var i = 0; i < buffer.length; i++) {
-            var code = buffer[i];
+        for (let i = 0; i < buffer.length; i++) {
+            let code = buffer[i];
             child = this.traverse(parent, code);
             if (child === NOT_FOUND) {
                 return NOT_FOUND;
@@ -529,7 +529,7 @@
             parent = child;
         }
 
-        var base = this.bc.getBase(child);
+        let base = this.bc.getBase(child);
         if (base <= 0) {
             // leaf node
             return - base - 1;
@@ -549,15 +549,15 @@
      */
     DoubleArray.prototype.commonPrefixSearch = function (key) {
 
-        var buffer = stringToUtf8Bytes(key);
+        let buffer = stringToUtf8Bytes(key);
 
-        var parent = ROOT_ID;
-        var child = NOT_FOUND;
+        let parent = ROOT_ID;
+        let child = NOT_FOUND;
 
-        var result = [];
+        let result = [];
 
-        for (var i = 0; i < buffer.length; i++) {
-            var code = buffer[i];
+        for (let i = 0; i < buffer.length; i++) {
+            let code = buffer[i];
 
             child = this.traverse(parent, code);
 
@@ -565,12 +565,12 @@
                 parent = child;
 
                 // look forward by terminal character code to check this node is a leaf or not
-                var grand_child = this.traverse(child, TERM_CODE);
+                let grand_child = this.traverse(child, TERM_CODE);
 
                 if (grand_child !== NOT_FOUND) {
-                    var base = this.bc.getBase(grand_child);
+                    let base = this.bc.getBase(grand_child);
 
-                    var r = {};
+                    let r = {};
 
                     if (base <= 0) {
                         // If child is a leaf node, add record to result
@@ -592,7 +592,7 @@
     };
 
     DoubleArray.prototype.traverse = function (parent, code) {
-        var child = this.bc.getBase(parent) + code;
+        let child = this.bc.getBase(parent) + code;
         if (this.bc.getCheck(child) === parent) {
             return child;
         } else {
@@ -615,7 +615,7 @@
 
     // Array utility functions
 
-    var newArrayBuffer = function (signed, bytes, size) {
+    let newArrayBuffer = function (signed, bytes, size) {
         if (signed) {
             switch(bytes) {
                 case 1:
@@ -641,10 +641,10 @@
         }
     };
 
-    var arrayCopy = function (src, src_offset, length) {
-        var buffer = new ArrayBuffer(length);
-        var dstU8 = new Uint8Array(buffer, 0, length);
-        var srcU8 = src.subarray(src_offset, length);
+    let arrayCopy = function (src, src_offset, length) {
+        let buffer = new ArrayBuffer(length);
+        let dstU8 = new Uint8Array(buffer, 0, length);
+        let srcU8 = src.subarray(src_offset, length);
         dstU8.set(srcU8);
         return dstU8;
     };
@@ -656,21 +656,21 @@
      * @param {String} str UTF-16 string to convert
      * @return {Uint8Array} Byte sequence encoded by UTF-8
      */
-    var stringToUtf8Bytes = function (str) {
+    let stringToUtf8Bytes = function (str) {
 
         // Max size of 1 character is 4 bytes
-        var bytes = new Uint8Array(new ArrayBuffer(str.length * 4));
+        let bytes = new Uint8Array(new ArrayBuffer(str.length * 4));
 
-        var i = 0, j = 0;
+        let i = 0, j = 0;
 
         while (i < str.length) {
-            var unicode_code;
+            let unicode_code;
 
-            var utf16_code = str.charCodeAt(i++);
+            let utf16_code = str.charCodeAt(i++);
             if (utf16_code >= 0xD800 && utf16_code <= 0xDBFF) {
                 // surrogate pair
-                var upper = utf16_code;           // high surrogate
-                var lower = str.charCodeAt(i++);  // low surrogate
+                let upper = utf16_code;           // high surrogate
+                let lower = str.charCodeAt(i++);  // low surrogate
 
                 if (lower >= 0xDC00 && lower <= 0xDFFF) {
                     unicode_code =
@@ -722,11 +722,11 @@
      * @param {Uint8Array} bytes UTF-8 byte sequence to convert
      * @return {String} String encoded by UTF-16
      */
-    var utf8BytesToString = function (bytes) {
+    let utf8BytesToString = function (bytes) {
 
-        var str = "";
-        var code, b1, b2, b3, b4, upper, lower;
-        var i = 0;
+        let str = "";
+        let code, b1, b2, b3, b4, upper, lower;
+        let i = 0;
 
         while (i < bytes.length) {
 
@@ -768,12 +768,12 @@
 
 
     // public methods
-    var doublearray = {
+    let doublearray = {
         builder: function (initial_size) {
             return new DoubleArrayBuilder(initial_size);
         },
         load: function (base_buffer, check_buffer) {
-            var bc = newBC(0);
+            let bc = newBC(0);
             bc.loadBaseBuffer(base_buffer);
             bc.loadCheckBuffer(check_buffer);
             return new DoubleArray(bc);
