@@ -369,68 +369,65 @@ class DoubleArrayBuilder {
     }
   }
 
-}
+  /**
+   * Find BASE value that all children are allocatable in double array's region
+   */
+  findAllocatableBase(children_info){
+    let bc = this.bc;
 
+    // Assertion: keys are sorted by byte order
+    // var c = -1;
+    // for (var i = 0; i < children_info.length; i = i + 3) {
+    //     if (children_info[i] < c) {
+    //         throw 'assertion error: not sort key'
+    //     }
+    //     c = children_info[i];
+    // }
 
-/**
- * Find BASE value that all children are allocatable in double array's region
- */
-DoubleArrayBuilder.prototype.findAllocatableBase =  (children_info) => {
+    // iterate linked list of unused nodes
+    let _base;
+    let curr = bc.getFirstUnusedNode();  // current index
+    // if (curr < 0) {
+    //     throw 'assertion error: getFirstUnusedNode returns negative value'
+    // }
 
-  let bc = this.bc;
+    while (true) {
+      _base = curr - children_info[0];
 
-  // Assertion: keys are sorted by byte order
-  // var c = -1;
-  // for (var i = 0; i < children_info.length; i = i + 3) {
-  //     if (children_info[i] < c) {
-  //         throw 'assertion error: not sort key'
-  //     }
-  //     c = children_info[i];
-  // }
+      if (_base < 0) {
+        curr = - bc.getCheck(curr);  // next
 
-  // iterate linked list of unused nodes
-  let _base;
-  let curr = bc.getFirstUnusedNode();  // current index
-  // if (curr < 0) {
-  //     throw 'assertion error: getFirstUnusedNode returns negative value'
-  // }
-
-  while (true) {
-    _base = curr - children_info[0];
-
-    if (_base < 0) {
-      curr = - bc.getCheck(curr);  // next
-
-      // if (curr < 0) {
-      //     throw 'assertion error: getCheck returns negative value'
-      // }
-
-      continue;
-    }
-
-    let empty_area_found = true;
-    for (let i = 0; i < children_info.length; i = i + 3) {
-      let code = children_info[i];
-      let candidate_id = _base + code;
-
-      if (!this.isUnusedNode(candidate_id)) {
-        // candidate_id is used node
-        // next
-        curr = - bc.getCheck(curr);
         // if (curr < 0) {
         //     throw 'assertion error: getCheck returns negative value'
         // }
 
-        empty_area_found = false;
-        break;
+        continue;
+      }
+
+      let empty_area_found = true;
+      for (let i = 0; i < children_info.length; i = i + 3) {
+        let code = children_info[i];
+        let candidate_id = _base + code;
+
+        if (!this.isUnusedNode(candidate_id)) {
+          // candidate_id is used node
+          // next
+          curr = - bc.getCheck(curr);
+          // if (curr < 0) {
+          //     throw 'assertion error: getCheck returns negative value'
+          // }
+
+          empty_area_found = false;
+          break;
+        }
+      }
+      if (empty_area_found) {
+        // Area is free
+        return _base;
       }
     }
-    if (empty_area_found) {
-      // Area is free
-      return _base;
-    }
   }
-};
+}
 
 /**
  * Check this double array index is unused or not
