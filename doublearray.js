@@ -373,13 +373,11 @@
             }
         }
     }
-  }
 
     /**
      * Find BASE value that all children are allocatable in double array's region
      */
-    DoubleArrayBuilder.prototype.findAllocatableBase = function (children_info) {
-
+    findAllocatableBase(children_info){
         let bc = this.bc;
 
         // Assertion: keys are sorted by byte order
@@ -433,7 +431,8 @@
                 return _base;
             }
         }
-    };
+    }
+  }
 
     /**
      * Check this double array index is unused or not
