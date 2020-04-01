@@ -761,7 +761,7 @@
 
 
     // public methods
-    let doublearray = {
+    const doublearray = {
         builder: function (initial_size) {
             return new DoubleArrayBuilder(initial_size);
         },
