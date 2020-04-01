@@ -18,7 +18,7 @@
 
   class BC{
 
-    constructor(initial_size){
+    constructor(initial_size, first_unused_node){
       let base = {
         signed: BASE_SIGNED,
         bytes: BASE_BYTES,
@@ -42,6 +42,7 @@
       BC.initCheck(check.array, ROOT_ID + 1, check.array.length);
       this.base =base;
       this.check = check;
+      this.first_unused_node = first_unused_node;
     }
 
     static initCheck(_check, start, end) {
@@ -83,8 +84,8 @@
 
   const newBC = (_initial_size) => {
     let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
-    let first_unused_node = ROOT_ID + 1;
-    let bc = new BC(initial_size);
+    let _first_unused_node = ROOT_ID + 1;
+    let bc = new BC(initial_size, _first_unused_node);
 
     return {
       getBaseBuffer: function () {
@@ -142,13 +143,13 @@
         // if (!Number.isFinite(index)) {
         //     throw 'assertion error: setFirstUnusedNode ' + index + ' is not finite number';
         // }
-        first_unused_node = index;
+        bc.first_unused_node = index;
       },
       getFirstUnusedNode: function () {
         // if (!Number.isFinite(first_unused_node)) {
         //     throw 'assertion error: getFirstUnusedNode ' + first_unused_node + ' is not finite number';
         // }
-        return first_unused_node;
+        return bc.first_unused_node;
       },
       shrink: function () {
         let last_index = this.size() - 1;
