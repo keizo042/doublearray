@@ -264,7 +264,7 @@
      */
     _build(parent_index, position, start, length) {
 
-      let children_info = this.getChildrenInfo(position, start, length);
+      const children_info = this.getChildrenInfo(position, start, length);
       let _base = this.findAllocatableBase(children_info);
 
       this.setBC(parent_index, children_info, _base);
