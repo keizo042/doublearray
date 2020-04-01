@@ -456,11 +456,12 @@ class DoubleArrayBuilder {
 /**
  * Factory method of double array
  */
-function DoubleArray(bc) {
-  this.bc = bc;       // BASE and CHECK
-  this.bc.shrink();
+class DoubleArray{
+  constructor(bc){
+    this.bc = bc;       // BASE and CHECK
+    this.bc.shrink();
+  }
 }
-
 
 /**
  * Look up a given key in this trie
