@@ -591,19 +591,19 @@
             return NOT_FOUND;
         }
     }
-  }
 
-    DoubleArray.prototype.size = function () {
+    size(){
         return this.bc.size();
-    };
+    }
 
-    DoubleArray.prototype.calc = function () {
+    calc () {
         return this.bc.calc();
-    };
+    }
 
-    DoubleArray.prototype.dump = function () {
+    dump () {
         return this.bc.dump();
-    };
+    }
+  }
 
 
     // Array utility functions
