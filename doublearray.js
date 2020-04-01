@@ -290,9 +290,8 @@
         this._build(child_index, position + 1, child_start, child_len);
       }
     }
-  }
 
-    DoubleArrayBuilder.prototype.getChildrenInfo = function (position, start, length) {
+    getChildrenInfo(position, start, length){
         let current_char = this.keys[start].k[position];
         let i = 0;
         let children_info = new Int32Array(length * 3);
@@ -317,7 +316,8 @@
         children_info = children_info.subarray(0, i);
 
         return children_info;
-    };
+    }
+  }
 
     DoubleArrayBuilder.prototype.setBC = function (parent_id, children_info, _base) {
 
