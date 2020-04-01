@@ -156,6 +156,24 @@
         efficiency: (size - unused_count) / size
       };
     }
+    dump () {
+      // for debug
+      let dump_base = "";
+      let dump_check = "";
+
+      let i;
+      for (i = 0; i < this.base.array.length; i++) {
+        dump_base = dump_base + " " + this.getBase(i);
+      }
+      for (i = 0; i < this.check.array.length; i++) {
+        dump_check = dump_check + " " + this.getCheck(i);
+      }
+
+      console.log("base:" + dump_base);
+      console.log("chck:" + dump_check);
+
+      return "base:" + dump_base + " chck:" + dump_check;
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -206,22 +224,7 @@
         return bc.calc();
       },
       dump: function () {
-        // for debug
-        let dump_base = "";
-        let dump_check = "";
-
-        let i;
-        for (i = 0; i < bc.base.array.length; i++) {
-          dump_base = dump_base + " " + this.getBase(i);
-        }
-        for (i = 0; i < bc.check.array.length; i++) {
-          dump_check = dump_check + " " + this.getCheck(i);
-        }
-
-        console.log("base:" + dump_base);
-        console.log("chck:" + dump_check);
-
-        return "base:" + dump_base + " chck:" + dump_check;
+        bc.dump();
       }
     };
   };
