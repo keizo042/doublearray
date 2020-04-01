@@ -458,22 +458,18 @@
     }
   }
 
-    /**
-     * Factory method of double array
-     */
-    function DoubleArray(bc) {
+  class DoubleArray{
+    constructor(bc){
         this.bc = bc;       // BASE and CHECK
         this.bc.shrink();
     }
-
-
     /**
      * Look up a given key in this trie
      *
      * @param {String} key
      * @return {Boolean} True if this trie contains a given key
      */
-    DoubleArray.prototype.contain = function (key) {
+    contain(key){
 
         let bc = this.bc;
 
@@ -501,8 +497,8 @@
             }
         }
         return false;
-    };
-
+    }
+  }
 
     /**
      * Look up a given key in this trie
