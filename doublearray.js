@@ -18,6 +18,32 @@
 
   class BC{
 
+    constructor(initial_size){
+      let base = {
+        signed: BASE_SIGNED,
+        bytes: BASE_BYTES,
+        array: newArrayBuffer(BASE_SIGNED, BASE_BYTES, initial_size)
+      };
+
+      let check = {
+        signed: CHECK_SIGNED,
+        bytes: CHECK_BYTES,
+        array: newArrayBuffer(CHECK_SIGNED, CHECK_BYTES, initial_size)
+      };
+
+      // init root node
+      base.array[ROOT_ID] = 1;
+      check.array[ROOT_ID] = ROOT_ID;
+
+      // init BASE
+      BC.initBase(base.array, check, ROOT_ID + 1, base.array.length);
+
+      // init CHECK
+      BC.initCheck(check.array, ROOT_ID + 1, check.array.length);
+      this.base =base;
+      this.check = check;
+    }
+
     static initCheck(_check, start, end) {
       for (let i = start; i < end; i++) {
         _check[i] = - i - 1;  // inversed next empty node index
@@ -54,52 +80,32 @@
       check.array = check_new_array;
     }
   }
+
   const newBC = (_initial_size) => {
     let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
     let first_unused_node = ROOT_ID + 1;
-
-    let base = {
-      signed: BASE_SIGNED,
-      bytes: BASE_BYTES,
-      array: newArrayBuffer(BASE_SIGNED, BASE_BYTES, initial_size)
-    };
-
-    let check = {
-      signed: CHECK_SIGNED,
-      bytes: CHECK_BYTES,
-      array: newArrayBuffer(CHECK_SIGNED, CHECK_BYTES, initial_size)
-    };
-
-    // init root node
-    base.array[ROOT_ID] = 1;
-    check.array[ROOT_ID] = ROOT_ID;
-
-    // init BASE
-    BC.initBase(base.array, check, ROOT_ID + 1, base.array.length);
-
-    // init CHECK
-    BC.initCheck(check.array, ROOT_ID + 1, check.array.length);
+    let bc = new BC(initial_size);
 
     return {
       getBaseBuffer: function () {
-        return base.array;
+        return bc.base.array;
       },
       getCheckBuffer: function () {
-        return check.array;
+        return bc.check.array;
       },
       loadBaseBuffer: function (base_buffer) {
-        base.array = base_buffer;
+        bc.base.array = base_buffer;
         return this;
       },
       loadCheckBuffer: function (check_buffer) {
-        check.array = check_buffer;
+        bc.check.array = check_buffer;
         return this;
       },
       size: function () {
-        return Math.max(base.array.length, check.array.length);
+        return Math.max(bc.base.array.length, bc.check.array.length);
       },
       getBase: function (index) {
-        if (base.array.length - 1 < index) {
+        if (bc.base.array.length - 1 < index) {
           return - index + 1;
           // realloc(index);
         }
@@ -107,10 +113,10 @@
         //     console.log('getBase:' + index);
         //     throw 'getBase' + index;
         // }
-        return base.array[index];
+        return bc.base.array[index];
       },
       getCheck: function (index) {
-        if (check.array.length - 1 < index) {
+        if (bc.check.array.length - 1 < index) {
           return - index - 1;
           // realloc(index);
         }
@@ -118,19 +124,19 @@
         //     console.log('getCheck:' + index);
         //     throw 'getCheck' + index;
         // }
-        return check.array[index];
+        return bc.check.array[index];
       },
       setBase: function (index, base_value) {
-        if (base.array.length - 1 < index) {
-          BC.realloc(index,base,check);
+        if (bc.base.array.length - 1 < index) {
+          BC.realloc(index, bc.base, check);
         }
-        base.array[index] = base_value;
+        bc.base.array[index] = base_value;
       },
       setCheck: function (index, check_value) {
-        if (check.array.length - 1 < index) {
-          BC.realloc(index, base,check);
+        if (bc.check.array.length - 1 < index) {
+          BC.realloc(index, bc.base, bc.check);
         }
-        check.array[index] = check_value;
+        bc.check.array[index] = check_value;
       },
       setFirstUnusedNode: function (index) {
         // if (!Number.isFinite(index)) {
@@ -147,19 +153,19 @@
       shrink: function () {
         let last_index = this.size() - 1;
         while (true) {
-          if (0 <= check.array[last_index]) {
+          if (0 <= bc.check.array[last_index]) {
             break;
           }
           last_index--;
         }
-        base.array = base.array.subarray(0, last_index + 2);   // keep last unused node
-        check.array = check.array.subarray(0, last_index + 2); // keep last unused node
+        bc.base.array = bc.base.array.subarray(0, last_index + 2);   // keep last unused node
+        bc.check.array = bc.check.array.subarray(0, last_index + 2); // keep last unused node
       },
       calc: function () {
         let unused_count = 0;
-        let size = check.array.length;
+        let size = bc.check.array.length;
         for (let i = 0; i < size; i++) {
-          if (check.array[i] < 0) {
+          if (bc.check.array[i] < 0) {
             unused_count++;
           }
         }
@@ -175,10 +181,10 @@
         let dump_check = "";
 
         let i;
-        for (i = 0; i < base.array.length; i++) {
+        for (i = 0; i < bc.base.array.length; i++) {
           dump_base = dump_base + " " + this.getBase(i);
         }
-        for (i = 0; i < check.array.length; i++) {
+        for (i = 0; i < bc.check.array.length; i++) {
           dump_check = dump_check + " " + this.getCheck(i);
         }
 
