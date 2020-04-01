@@ -36,11 +36,7 @@
         _base[start] = - last_used_id;
       }
     }
-  }
-  const newBC = (_initial_size) => {
-    let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
-
-    let realloc = function (min_size, base, check) {
+    static realloc(min_size, base, check){
       // expand arrays size by given ratio
       let new_size = min_size * MEMORY_EXPAND_RATIO;
       // console.log('re-allocate memory to ' + new_size);
@@ -56,8 +52,10 @@
       check_new_array.set(check.array);
       check.array = null;  // explicit GC
       check.array = check_new_array;
-    };
-
+    }
+  }
+  const newBC = (_initial_size) => {
+    let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
     let first_unused_node = ROOT_ID + 1;
 
     let base = {
@@ -124,13 +122,13 @@
       },
       setBase: function (index, base_value) {
         if (base.array.length - 1 < index) {
-          realloc(index,base,check);
+          BC.realloc(index,base,check);
         }
         base.array[index] = base_value;
       },
       setCheck: function (index, check_value) {
         if (check.array.length - 1 < index) {
-          realloc(index, base,check);
+          BC.realloc(index, base,check);
         }
         check.array[index] = check_value;
       },
