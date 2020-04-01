@@ -64,10 +64,7 @@
       }
     }
     static realloc(min_size, base, check){
-      // expand arrays size by given ratio
-      let new_size = min_size * MEMORY_EXPAND_RATIO;
-      // console.log('re-allocate memory to ' + new_size);
-
+      const new_size = min_size * MEMORY_EXPAND_RATIO;
       let base_new_array = newArrayBuffer(base.signed, base.bytes, new_size);
       BC.initBase(base_new_array, check, base.array.length, new_size);  // init BASE in new range
       base_new_array.set(base.array);
