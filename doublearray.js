@@ -197,20 +197,20 @@ class DoubleArrayBuilder {
     this.bc = newBC(initial_size);  // BASE and CHECK
     this.keys = [];
   }
+
+  /**
+   * Append a key to initialize set
+   * (This method should be called by dictionary ordered key)
+   *
+   * @param {String} key
+   * @param {Number} value Integer value from 0 to max signed integer number - 1
+   */
+  append(key, record) {
+    this.keys.push({ k: key, v: record });
+    return this;
+  }
 }
 
-
-/**
- * Append a key to initialize set
- * (This method should be called by dictionary ordered key)
- *
- * @param {String} key
- * @param {Number} value Integer value from 0 to max signed integer number - 1
- */
-DoubleArrayBuilder.prototype.append =  (key, record) => {
-  this.keys.push({ k: key, v: record });
-  return this;
-};
 
 /**
  * Build double array for given keys
