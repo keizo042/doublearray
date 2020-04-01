@@ -34,7 +34,7 @@
             }
         };
 
-        let initCheck = function (_check, start, end) {
+        const initCheck =  (_check, start, end) => {
             for (let i = start; i < end; i++) {
                 _check[i] = - i - 1;  // inversed next empty node index
             }
