@@ -131,6 +131,17 @@
     getFirstUnusedNode () {
       return this.first_unused_node;
     }
+    shrink() {
+      let last_index = this.size() - 1;
+      while (true) {
+        if (0 <= this.check.array[last_index]) {
+          break;
+        }
+        last_index--;
+      }
+      this.base.array = this.base.array.subarray(0, last_index + 2);   // keep last unused node
+      this.check.array = this.check.array.subarray(0, last_index + 2); // keep last unused node
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -175,15 +186,7 @@
         return bc.getFirstUnusedNode();
       },
       shrink: function () {
-        let last_index = this.size() - 1;
-        while (true) {
-          if (0 <= bc.check.array[last_index]) {
-            break;
-          }
-          last_index--;
-        }
-        bc.base.array = bc.base.array.subarray(0, last_index + 2);   // keep last unused node
-        bc.check.array = bc.check.array.subarray(0, last_index + 2); // keep last unused node
+        bc.shrink();
       },
       calc: function () {
         let unused_count = 0;
