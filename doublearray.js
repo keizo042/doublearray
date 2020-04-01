@@ -582,16 +582,16 @@
 
         return result;
     }
-  }
 
-    DoubleArray.prototype.traverse = function (parent, code) {
+    traverse(parent, code){
         let child = this.bc.getBase(parent) + code;
         if (this.bc.getCheck(child) === parent) {
             return child;
         } else {
             return NOT_FOUND;
         }
-    };
+    }
+  }
 
     DoubleArray.prototype.size = function () {
         return this.bc.size();
