@@ -135,6 +135,7 @@
     getFirstUnusedNode () {
       return this.first_unused_node;
     }
+
     shrink() {
       let last_index = this.size() - 1;
       while (true) {
@@ -146,6 +147,7 @@
       this.base.array = this.base.array.subarray(0, last_index + 2);   // keep last unused node
       this.check.array = this.check.array.subarray(0, last_index + 2); // keep last unused node
     }
+
     calc () {
       let unused_count = 0;
       let size = this.check.array.length;
@@ -160,6 +162,7 @@
         efficiency: (size - unused_count) / size
       };
     }
+
     dump () {
       // for debug
       let dump_base = "";
