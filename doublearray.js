@@ -193,13 +193,15 @@
     };
 
 
+  class DoubleArrayBuilder{
     /**
      * Factory method of double array
      */
-    function DoubleArrayBuilder(initial_size) {
-        this.bc = newBC(initial_size);  // BASE and CHECK
-        this.keys = [];
+    constructor(initial_size){
+      this.bc = newBC(initial_size);  // BASE and CHECK
+      this.keys = [];
     }
+  }
 
 
     /**
