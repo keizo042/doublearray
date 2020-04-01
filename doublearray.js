@@ -498,7 +498,6 @@
         }
         return false;
     }
-  }
 
     /**
      * Look up a given key in this trie
@@ -506,7 +505,7 @@
      * @param {String} key
      * @return {Number} Record value assgned to this key, -1 if this key does not contain
      */
-    DoubleArray.prototype.lookup = function (key) {
+    lookup(key){
 
         key += TERM_CHAR;
         let buffer = stringToUtf8Bytes(key);
@@ -531,9 +530,8 @@
             // not leaf
             return NOT_FOUND;
         }
-    };
-
-
+    }
+  }
     /**
      * Common prefix search
      *
