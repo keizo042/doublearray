@@ -209,63 +209,62 @@ class DoubleArrayBuilder {
     this.keys.push({ k: key, v: record });
     return this;
   }
-}
 
+  /**
+   * Build double array for given keys
+   *
+   * @param {Array} keys Array of keys. A key is a Object which has properties 'k', 'v'.
+   * 'k' is a key string, 'v' is a record assigned to that key.
+   * @return {DoubleArray} Compiled double array
+   */
+  build(keys, sorted){
 
-/**
- * Build double array for given keys
- *
- * @param {Array} keys Array of keys. A key is a Object which has properties 'k', 'v'.
- * 'k' is a key string, 'v' is a record assigned to that key.
- * @return {DoubleArray} Compiled double array
- */
-DoubleArrayBuilder.prototype.build =  (keys, sorted) => {
+    if (keys == null) {
+      keys = this.keys;
+    }
 
-  if (keys == null) {
-    keys = this.keys;
-  }
+    if (keys == null) {
+      return new DoubleArray(this.bc);
+    }
 
-  if (keys == null) {
+    if (sorted == null) {
+      sorted = false;
+    }
+
+    // Convert key string to ArrayBuffer
+    let buff_keys =
+      keys.map( (k) => {
+        return {
+          k: stringToUtf8Bytes(k.k + TERM_CHAR),
+          v: k.v
+        };
+      });
+
+    // Sort keys by byte order
+    if (sorted) {
+      this.keys = buff_keys;
+    } else {
+      this.keys =
+        buff_keys.sort( (k1, k2) => {
+          let b1 = k1.k;
+          let b2 = k2.k;
+          let min_length = Math.min(b1.length, b2.length);
+          for (let pos = 0; pos < min_length; pos++) {
+            if (b1[pos] === b2[pos]) {
+              continue;
+            }
+            return b1[pos] - b2[pos];
+          }
+          return b1.length - b2.length;
+        });
+    }
+
+    buff_keys = null;  // explicit GC
+
+    this._build(ROOT_ID, 0, 0, this.keys.length);
     return new DoubleArray(this.bc);
   }
-
-  if (sorted == null) {
-    sorted = false;
-  }
-
-  // Convert key string to ArrayBuffer
-  let buff_keys =
-    keys.map( (k) => {
-      return {
-        k: stringToUtf8Bytes(k.k + TERM_CHAR),
-        v: k.v
-      };
-    });
-
-  // Sort keys by byte order
-  if (sorted) {
-    this.keys = buff_keys;
-  } else {
-    this.keys =
-      buff_keys.sort( (k1, k2) => {
-        let b1 = k1.k;
-        let b2 = k2.k;
-        let min_length = Math.min(b1.length, b2.length);
-        for (let pos = 0; pos < min_length; pos++) {
-          if (b1[pos] === b2[pos]) {
-            continue;
-          }
-          return b1[pos] - b2[pos];
-        }
-        return b1.length - b2.length;
-      });
-  }
-
-  buff_keys = null;  // explicit GC
-
-  this._build(ROOT_ID, 0, 0, this.keys.length);
-  return new DoubleArray(this.bc);
-};
+}
 
 /**
  * Append nodes to BASE and CHECK array recursively
