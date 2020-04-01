@@ -186,7 +186,7 @@
      * Factory method of double array
      */
     constructor(initial_size){
-      this.bc = newBC(initial_size);  // BASE and CHECK
+      this.bc = new BC(initial_size);  // BASE and CHECK
       this.keys = [];
     }
 
@@ -754,7 +754,7 @@
       return new DoubleArrayBuilder(initial_size);
     },
     load:  (base_buffer, check_buffer) => {
-      let bc = newBC(0);
+      let bc = new BC(0);
       bc.loadBaseBuffer(base_buffer);
       bc.loadCheckBuffer(check_buffer);
       return new DoubleArray(bc);
