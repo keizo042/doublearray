@@ -531,7 +531,7 @@
             return NOT_FOUND;
         }
     }
-  }
+
     /**
      * Common prefix search
      *
@@ -539,7 +539,7 @@
      * @return {Array} Each result object has 'k' and 'v' (key and record,
      * respectively) properties assigned to matched string
      */
-    DoubleArray.prototype.commonPrefixSearch = function (key) {
+    commonPrefixSearch(key){
 
         let buffer = stringToUtf8Bytes(key);
 
@@ -581,7 +581,8 @@
         }
 
         return result;
-    };
+    }
+  }
 
     DoubleArray.prototype.traverse = function (parent, code) {
         let child = this.bc.getBase(parent) + code;
