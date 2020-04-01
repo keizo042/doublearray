@@ -237,7 +237,7 @@
 
         // Convert key string to ArrayBuffer
         let buff_keys =
-            keys.map(function (k) {
+            keys.map((k) => {
                 return {
                     k: stringToUtf8Bytes(k.k + TERM_CHAR),
                     v: k.v
@@ -249,7 +249,7 @@
             this.keys = buff_keys;
         } else {
             this.keys =
-                buff_keys.sort(function (k1, k2) {
+                buff_keys.sort((k1, k2) => {
                     let b1 = k1.k;
                     let b2 = k2.k;
                     let min_length = Math.min(b1.length, b2.length);
