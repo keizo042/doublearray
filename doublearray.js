@@ -313,62 +313,63 @@ class DoubleArrayBuilder {
 
     return children_info;
   }
-}
 
-DoubleArrayBuilder.prototype.setBC = (parent_id, children_info, _base) => {
+  setBC(parent_id, children_info, _base){
 
-  let bc = this.bc;
+    let bc = this.bc;
 
-  bc.setBase(parent_id, _base);  // Update BASE of parent node
+    bc.setBase(parent_id, _base);  // Update BASE of parent node
 
-  for (let i = 0; i < children_info.length; i = i + 3) {
-    let code = children_info[i];
-    let child_id = _base + code;
+    for (let i = 0; i < children_info.length; i = i + 3) {
+      let code = children_info[i];
+      let child_id = _base + code;
 
-    // Update linked list of unused nodes
+      // Update linked list of unused nodes
 
-    // Assertion
-    // if (child_id < 0) {
-    //     throw 'assertion error: child_id is negative'
-    // }
-
-    let prev_unused_id = - bc.getBase(child_id);
-    let next_unused_id = - bc.getCheck(child_id);
-    // if (prev_unused_id < 0) {
-    //     throw 'assertion error: setBC'
-    // }
-    // if (next_unused_id < 0) {
-    //     throw 'assertion error: setBC'
-    // }
-    if (child_id !== bc.getFirstUnusedNode()) {
-      bc.setCheck(prev_unused_id, - next_unused_id);
-    } else {
-      // Update first_unused_node
-      bc.setFirstUnusedNode(next_unused_id);
-    }
-    bc.setBase(next_unused_id, - prev_unused_id);
-
-    let check = parent_id;         // CHECK is parent node index
-    bc.setCheck(child_id, check);  // Update CHECK of child node
-
-    // Update record
-    if (code === TERM_CODE) {
-      let start_pos = children_info[i + 1];
-      // var len = children_info[i + 2];
-      // if (len != 1) {
-      //     throw 'assertion error: there are multiple terminal nodes. len:' + len;
+      // Assertion
+      // if (child_id < 0) {
+      //     throw 'assertion error: child_id is negative'
       // }
-      let value = this.keys[start_pos].v;
 
-      if (value == null) {
-        value = 0;
+      let prev_unused_id = - bc.getBase(child_id);
+      let next_unused_id = - bc.getCheck(child_id);
+      // if (prev_unused_id < 0) {
+      //     throw 'assertion error: setBC'
+      // }
+      // if (next_unused_id < 0) {
+      //     throw 'assertion error: setBC'
+      // }
+      if (child_id !== bc.getFirstUnusedNode()) {
+        bc.setCheck(prev_unused_id, - next_unused_id);
+      } else {
+        // Update first_unused_node
+        bc.setFirstUnusedNode(next_unused_id);
       }
+      bc.setBase(next_unused_id, - prev_unused_id);
 
-      let base = - value - 1;       // BASE is inverted record value
-      bc.setBase(child_id, base);  // Update BASE of child(leaf) node
+      let check = parent_id;         // CHECK is parent node index
+      bc.setCheck(child_id, check);  // Update CHECK of child node
+
+      // Update record
+      if (code === TERM_CODE) {
+        let start_pos = children_info[i + 1];
+        // var len = children_info[i + 2];
+        // if (len != 1) {
+        //     throw 'assertion error: there are multiple terminal nodes. len:' + len;
+        // }
+        let value = this.keys[start_pos].v;
+
+        if (value == null) {
+          value = 0;
+        }
+
+        let base = - value - 1;       // BASE is inverted record value
+        bc.setBase(child_id, base);  // Update BASE of child(leaf) node
+      }
     }
   }
-};
+
+}
 
 
 /**
