@@ -97,6 +97,10 @@
     loadCheckBuffer(check_buffer){
       this.check.array = check_buffer;
     }
+
+    size(){
+      return Math.max(this.base.array.length, this.check.array.length);
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -120,7 +124,7 @@
         return this;
       },
       size: function () {
-        return Math.max(bc.base.array.length, bc.check.array.length);
+        return bc.size();
       },
       getBase: function (index) {
         if (bc.base.array.length - 1 < index) {
