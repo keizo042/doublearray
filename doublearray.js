@@ -37,6 +37,12 @@ const newBC = (initial_size) => {
     }
   };
 
+  /**
+   * Look up a given key in this trie
+   *
+   * @param {String} key
+   * @return {Number} Record value assgned to this key, -1 if this key does not contain
+   */
   const realloc =  (min_size) => {
     // expand arrays size by given ratio
     let new_size = min_size * MEMORY_EXPAND_RATIO;
@@ -461,151 +467,142 @@ class DoubleArray{
     this.bc = bc;       // BASE and CHECK
     this.bc.shrink();
   }
-}
 
-/**
- * Look up a given key in this trie
- *
- * @param {String} key
- * @return {Boolean} True if this trie contains a given key
- */
-DoubleArray.prototype.contain = (key) => {
+  /**
+   * Look up a given key in this trie
+   *
+   * @param {String} key
+   * @return {Boolean} True if this trie contains a given key
+   */
+  contain(key){
 
-  let bc = this.bc;
+    let bc = this.bc;
 
-  key += TERM_CHAR;
-  let buffer = stringToUtf8Bytes(key);
+    key += TERM_CHAR;
+    let buffer = stringToUtf8Bytes(key);
 
-  let parent = ROOT_ID;
-  let child = NOT_FOUND;
+    let parent = ROOT_ID;
+    let child = NOT_FOUND;
 
-  for (let i = 0; i < buffer.length; i++) {
-    let code = buffer[i];
+    for (let i = 0; i < buffer.length; i++) {
+      let code = buffer[i];
 
-    child = this.traverse(parent, code);
-    if (child === NOT_FOUND) {
-      return false;
+      child = this.traverse(parent, code);
+      if (child === NOT_FOUND) {
+        return false;
+      }
+
+      if (bc.getBase(child) <= 0) {
+        // leaf node
+        return true;
+      } else {
+        // not leaf
+        parent = child;
+        continue;
+      }
+    }
+    return false;
+  }
+
+  lookup(key){
+
+    key += TERM_CHAR;
+    let buffer = stringToUtf8Bytes(key);
+
+    let parent = ROOT_ID;
+    let child = NOT_FOUND;
+
+    for (let i = 0; i < buffer.length; i++) {
+      let code = buffer[i];
+      child = this.traverse(parent, code);
+      if (child === NOT_FOUND) {
+        return NOT_FOUND;
+      }
+      parent = child;
     }
 
-    if (bc.getBase(child) <= 0) {
+    let base = this.bc.getBase(child);
+    if (base <= 0) {
       // leaf node
-      return true;
+      return - base - 1;
     } else {
       // not leaf
-      parent = child;
-      continue;
-    }
-  }
-  return false;
-};
-
-
-/**
- * Look up a given key in this trie
- *
- * @param {String} key
- * @return {Number} Record value assgned to this key, -1 if this key does not contain
- */
-DoubleArray.prototype.lookup =  (key) =>{
-
-  key += TERM_CHAR;
-  let buffer = stringToUtf8Bytes(key);
-
-  let parent = ROOT_ID;
-  let child = NOT_FOUND;
-
-  for (let i = 0; i < buffer.length; i++) {
-    let code = buffer[i];
-    child = this.traverse(parent, code);
-    if (child === NOT_FOUND) {
       return NOT_FOUND;
     }
-    parent = child;
   }
 
-  let base = this.bc.getBase(child);
-  if (base <= 0) {
-    // leaf node
-    return - base - 1;
-  } else {
-    // not leaf
-    return NOT_FOUND;
-  }
-};
+  /**
+   * Common prefix search
+   *
+   * @param {String} key
+   * @return {Array} Each result object has 'k' and 'v' (key and record,
+   * respectively) properties assigned to matched string
+   */
+  commonPrefixSearch(key){
 
+    let buffer = stringToUtf8Bytes(key);
 
-/**
- * Common prefix search
- *
- * @param {String} key
- * @return {Array} Each result object has 'k' and 'v' (key and record,
- * respectively) properties assigned to matched string
- */
-DoubleArray.prototype.commonPrefixSearch =  (key) => {
+    let parent = ROOT_ID;
+    let child = NOT_FOUND;
 
-  let buffer = stringToUtf8Bytes(key);
+    let result = [];
 
-  let parent = ROOT_ID;
-  let child = NOT_FOUND;
+    for (let i = 0; i < buffer.length; i++) {
+      let code = buffer[i];
 
-  let result = [];
+      child = this.traverse(parent, code);
 
-  for (let i = 0; i < buffer.length; i++) {
-    let code = buffer[i];
+      if (child !== NOT_FOUND) {
+        parent = child;
 
-    child = this.traverse(parent, code);
+        // look forward by terminal character code to check this node is a leaf or not
+        let grand_child = this.traverse(child, TERM_CODE);
 
-    if (child !== NOT_FOUND) {
-      parent = child;
+        if (grand_child !== NOT_FOUND) {
+          let base = this.bc.getBase(grand_child);
 
-      // look forward by terminal character code to check this node is a leaf or not
-      let grand_child = this.traverse(child, TERM_CODE);
+          let r = {};
 
-      if (grand_child !== NOT_FOUND) {
-        let base = this.bc.getBase(grand_child);
+          if (base <= 0) {
+            // If child is a leaf node, add record to result
+            r.v = - base - 1;
+          }
 
-        let r = {};
+          // If child is a leaf node, add word to result
+          r.k = utf8BytesToString(arrayCopy(buffer, 0, i + 1));
 
-        if (base <= 0) {
-          // If child is a leaf node, add record to result
-          r.v = - base - 1;
+          result.push(r);
         }
-
-        // If child is a leaf node, add word to result
-        r.k = utf8BytesToString(arrayCopy(buffer, 0, i + 1));
-
-        result.push(r);
+        continue;
+      } else {
+        break;
       }
-      continue;
+    }
+
+    return result;
+  }
+
+  traverse(parant, code){
+    let child = this.bc.getBase(parent) + code;
+    if (this.bc.getCheck(child) === parent) {
+      return child;
     } else {
-      break;
+      return NOT_FOUND;
     }
   }
 
-  return result;
-};
-
-DoubleArray.prototype.traverse =  (parent, code) => {
-  let child = this.bc.getBase(parent) + code;
-  if (this.bc.getCheck(child) === parent) {
-    return child;
-  } else {
-    return NOT_FOUND;
+  size(){
+    return this.bc.size();
   }
-};
 
-DoubleArray.prototype.size =  () => {
-  return this.bc.size();
-};
+  calc(){
+    return this.bc.calc();
+  }
 
-DoubleArray.prototype.calc =  () => {
-  return this.bc.calc();
-};
-
-DoubleArray.prototype.dump =  () => {
-  return this.bc.dump();
-};
-
+  dump(){
+    return this.bc.dump();
+  }
+}
 
 // Array utility functions
 
