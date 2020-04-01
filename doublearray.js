@@ -63,6 +63,7 @@
         _base[start] = - last_used_id;
       }
     }
+
     static realloc(min_size, base, check){
       const new_size = min_size * MEMORY_EXPAND_RATIO;
 
