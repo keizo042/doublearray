@@ -101,6 +101,30 @@
     size(){
       return Math.max(this.base.array.length, this.check.array.length);
     }
+    getBase (index) {
+      if (this.base.array.length - 1 < index) {
+        return - index + 1;
+      }
+      return this.base.array[index];
+    }
+    getCheck(index) {
+      if (this.check.array.length - 1 < index) {
+        return - index - 1;
+      }
+      return this.check.array[index];
+    }
+    setBase(index, base_value) {
+      if (this.base.array.length - 1 < index) {
+        BC.realloc(index, bc.base, check);
+      }
+      this.base.array[index] = base_value;
+    }
+    setCheck (index, check_value) {
+      if (this.check.array.length - 1 < index) {
+        BC.realloc(index, this.base, this.check);
+      }
+      bc.check.array[index] = check_value;
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -127,38 +151,16 @@
         return bc.size();
       },
       getBase: function (index) {
-        if (bc.base.array.length - 1 < index) {
-          return - index + 1;
-          // realloc(index);
-        }
-        // if (!Number.isFinite(base.array[index])) {
-        //     console.log('getBase:' + index);
-        //     throw 'getBase' + index;
-        // }
-        return bc.base.array[index];
+        return bc.getBase(index)
       },
       getCheck: function (index) {
-        if (bc.check.array.length - 1 < index) {
-          return - index - 1;
-          // realloc(index);
-        }
-        // if (!Number.isFinite(check.array[index])) {
-        //     console.log('getCheck:' + index);
-        //     throw 'getCheck' + index;
-        // }
-        return bc.check.array[index];
+        return bc.getCheck(index);
       },
       setBase: function (index, base_value) {
-        if (bc.base.array.length - 1 < index) {
-          BC.realloc(index, bc.base, check);
-        }
-        bc.base.array[index] = base_value;
+        this.setBase(index, base_value);
       },
       setCheck: function (index, check_value) {
-        if (bc.check.array.length - 1 < index) {
-          BC.realloc(index, bc.base, bc.check);
-        }
-        bc.check.array[index] = check_value;
+        this.setCheck(index, check_value);
       },
       setFirstUnusedNode: function (index) {
         // if (!Number.isFinite(index)) {
