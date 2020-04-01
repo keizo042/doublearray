@@ -180,53 +180,7 @@
     let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
     let _first_unused_node = ROOT_ID + 1;
     let bc = new BC(initial_size, _first_unused_node);
-
-    return {
-      getBaseBuffer: function () {
-        return bc.getBaseBuffer();
-      },
-      getCheckBuffer: function () {
-        return bc.getCheckBuffer();
-      },
-      loadBaseBuffer: function (base_buffer) {
-        bc.loadBaseBuffer(base_buffer);
-        return this;
-      },
-      loadCheckBuffer: function (check_buffer) {
-        bc.loadCheckBuffer(check_buffer);
-        return this;
-      },
-      size: function () {
-        return bc.size();
-      },
-      getBase: function (index) {
-        return bc.getBase(index)
-      },
-      getCheck: function (index) {
-        return bc.getCheck(index);
-      },
-      setBase: function (index, base_value) {
-        bc.setBase(index, base_value);
-      },
-      setCheck: function (index, check_value) {
-        bc.setCheck(index, check_value);
-      },
-      setFirstUnusedNode: function (index) {
-        bc.setFirstUnusedNode(index);
-      },
-      getFirstUnusedNode: function () {
-        return bc.getFirstUnusedNode();
-      },
-      shrink: function () {
-        bc.shrink();
-      },
-      calc: function () {
-        return bc.calc();
-      },
-      dump: function () {
-        bc.dump();
-      }
-    };
+    return bc;
   };
 
 
