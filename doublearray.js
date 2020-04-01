@@ -80,6 +80,23 @@
       check.array = null;  // explicit GC
       check.array = check_new_array;
     }
+
+    getBaseBuffer() {
+      return this.base.array;
+    }
+
+    getCheckBuffer(){
+      return this.check.array;
+    }
+
+    loadBaseBuffer(base_buffer){
+      this.base.array = base_buffer;
+      return this;
+    }
+
+    loadCheckBuffer(check_buffer){
+      this.check.array = check_buffer;
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -89,17 +106,17 @@
 
     return {
       getBaseBuffer: function () {
-        return bc.base.array;
+        return bc.getBaseBuffer();
       },
       getCheckBuffer: function () {
-        return bc.check.array;
+        return bc.getCheckBuffer();
       },
       loadBaseBuffer: function (base_buffer) {
-        bc.base.array = base_buffer;
+        bc.loadBaseBuffer(base_buffer);
         return this;
       },
       loadCheckBuffer: function (check_buffer) {
-        bc.check.array = check_buffer;
+        bc.loadCheckBuffer(check_buffer);
         return this;
       },
       size: function () {
