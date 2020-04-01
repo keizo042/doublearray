@@ -23,11 +23,8 @@
         _check[i] = - i - 1;  // inversed next empty node index
       }
     }
-  }
-  const newBC = (_initial_size) => {
-    let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
 
-    const initBase =  (_base, check, start, end) =>  {  // 'end' index does not include
+    static initBase(_base,check,start,end){
       for (let i = start; i < end; i++) {
         _base[i] = - i + 1;  // inversed previous empty node index
       }
@@ -38,7 +35,10 @@
         }
         _base[start] = - last_used_id;
       }
-    };
+    }
+  }
+  const newBC = (_initial_size) => {
+    let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
 
     let realloc = function (min_size) {
       // expand arrays size by given ratio
@@ -46,7 +46,7 @@
       // console.log('re-allocate memory to ' + new_size);
 
       let base_new_array = newArrayBuffer(base.signed, base.bytes, new_size);
-      initBase(base_new_array, check, base.array.length, new_size);  // init BASE in new range
+      BC.initBase(base_new_array, check, base.array.length, new_size);  // init BASE in new range
       base_new_array.set(base.array);
       base.array = null;  // explicit GC
       base.array = base_new_array;
@@ -77,7 +77,7 @@
     check.array[ROOT_ID] = ROOT_ID;
 
     // init BASE
-    initBase(base.array, check, ROOT_ID + 1, base.array.length);
+    BC.initBase(base.array, check, ROOT_ID + 1, base.array.length);
 
     // init CHECK
     BC.initCheck(check.array, ROOT_ID + 1, check.array.length);
