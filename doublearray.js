@@ -115,7 +115,7 @@
     }
     setBase(index, base_value) {
       if (this.base.array.length - 1 < index) {
-        BC.realloc(index, bc.base, check);
+        BC.realloc(index, this.base, check);
       }
       this.base.array[index] = base_value;
     }
@@ -123,7 +123,7 @@
       if (this.check.array.length - 1 < index) {
         BC.realloc(index, this.base, this.check);
       }
-      bc.check.array[index] = check_value;
+      this.check.array[index] = check_value;
     }
   }
 
@@ -157,15 +157,12 @@
         return bc.getCheck(index);
       },
       setBase: function (index, base_value) {
-        this.setBase(index, base_value);
+        bc.setBase(index, base_value);
       },
       setCheck: function (index, check_value) {
-        this.setCheck(index, check_value);
+        bc.setCheck(index, check_value);
       },
       setFirstUnusedNode: function (index) {
-        // if (!Number.isFinite(index)) {
-        //     throw 'assertion error: setFirstUnusedNode ' + index + ' is not finite number';
-        // }
         bc.first_unused_node = index;
       },
       getFirstUnusedNode: function () {
