@@ -18,7 +18,7 @@
 
   class BC {
 
-    constructor(initial_size, first_unused_node){
+    constructor(initial_size = DEFAULT_INITIAL_SIZE, first_unused_node = ROOT_ID +1){
       let base = {
         signed: BASE_SIGNED,
         bytes: BASE_BYTES,
@@ -176,10 +176,8 @@
     }
   }
 
-  const newBC = (_initial_size) => {
-    let initial_size = _initial_size ? _initial_size : DEFAULT_INITIAL_SIZE;
-    let _first_unused_node = ROOT_ID + 1;
-    let bc = new BC(initial_size, _first_unused_node);
+  const newBC = (initial_size) => {
+    return new BC(initial_size);
     return bc;
   };
 
