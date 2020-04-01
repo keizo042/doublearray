@@ -286,34 +286,34 @@ class DoubleArrayBuilder {
       this._build(child_index, position + 1, child_start, child_len);
     }
   }
-}
 
-DoubleArrayBuilder.prototype.getChildrenInfo =  (position, start, length) => {
-  let current_char = this.keys[start].k[position];
-  let i = 0;
-  let children_info = new Int32Array(length * 3);
+  getChildInfo(position, start, length){
+    let current_char = this.keys[start].k[position];
+    let i = 0;
+    let children_info = new Int32Array(length * 3);
 
-  children_info[i++] = current_char;  // char (current)
-  children_info[i++] = start;         // start index (current)
+    children_info[i++] = current_char;  // char (current)
+    children_info[i++] = start;         // start index (current)
 
-  let next_pos = start;
-  let start_pos = start;
-  for (; next_pos < start + length; next_pos++) {
-    let next_char = this.keys[next_pos].k[position];
-    if (current_char !== next_char) {
-      children_info[i++] = next_pos - start_pos;  // length (current)
+    let next_pos = start;
+    let start_pos = start;
+    for (; next_pos < start + length; next_pos++) {
+      let next_char = this.keys[next_pos].k[position];
+      if (current_char !== next_char) {
+        children_info[i++] = next_pos - start_pos;  // length (current)
 
-      children_info[i++] = next_char;             // char (next)
-      children_info[i++] = next_pos;              // start index (next)
-      current_char = next_char;
-      start_pos = next_pos;
+        children_info[i++] = next_char;             // char (next)
+        children_info[i++] = next_pos;              // start index (next)
+        current_char = next_char;
+        start_pos = next_pos;
+      }
     }
-  }
-  children_info[i++] = next_pos - start_pos;
-  children_info = children_info.subarray(0, i);
+    children_info[i++] = next_pos - start_pos;
+    children_info = children_info.subarray(0, i);
 
-  return children_info;
-};
+    return children_info;
+  }
+}
 
 DoubleArrayBuilder.prototype.setBC = (parent_id, children_info, _base) => {
 
