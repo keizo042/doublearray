@@ -178,7 +178,6 @@
 
   const newBC = (initial_size) => {
     return new BC(initial_size);
-    return bc;
   };
 
 
