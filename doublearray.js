@@ -125,6 +125,12 @@
       }
       this.check.array[index] = check_value;
     }
+    setFirstUnusedNode (index) {
+      this.first_unused_node = index;
+    }
+    getFirstUnusedNode () {
+      return this.first_unused_node;
+    }
   }
 
   const newBC = (_initial_size) => {
@@ -163,13 +169,10 @@
         bc.setCheck(index, check_value);
       },
       setFirstUnusedNode: function (index) {
-        bc.first_unused_node = index;
+        bc.setFirstUnusedNode(index);
       },
       getFirstUnusedNode: function () {
-        // if (!Number.isFinite(first_unused_node)) {
-        //     throw 'assertion error: getFirstUnusedNode ' + first_unused_node + ' is not finite number';
-        // }
-        return bc.first_unused_node;
+        return bc.getFirstUnusedNode();
       },
       shrink: function () {
         let last_index = this.size() - 1;
