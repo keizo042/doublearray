@@ -17,7 +17,11 @@
 
 
   class BC{
-    constructor(){
+
+    static initCheck(_check, start, end) {
+      for (let i = start; i < end; i++) {
+        _check[i] = - i - 1;  // inversed next empty node index
+      }
     }
   }
   const newBC = (_initial_size) => {
@@ -36,12 +40,6 @@
       }
     };
 
-    const initCheck =  (_check, start, end) => {
-      for (let i = start; i < end; i++) {
-        _check[i] = - i - 1;  // inversed next empty node index
-      }
-    };
-
     let realloc = function (min_size) {
       // expand arrays size by given ratio
       let new_size = min_size * MEMORY_EXPAND_RATIO;
@@ -54,7 +52,7 @@
       base.array = base_new_array;
 
       let check_new_array = newArrayBuffer(check.signed, check.bytes, new_size);
-      initCheck(check_new_array, check.array.length, new_size);  // init CHECK in new range
+      BC.initCheck(check_new_array, check.array.length, new_size);  // init CHECK in new range
       check_new_array.set(check.array);
       check.array = null;  // explicit GC
       check.array = check_new_array;
@@ -82,7 +80,7 @@
     initBase(base.array, ROOT_ID + 1, base.array.length);
 
     // init CHECK
-    initCheck(check.array, ROOT_ID + 1, check.array.length);
+    BC.initCheck(check.array, ROOT_ID + 1, check.array.length);
 
     return {
       getBaseBuffer: function () {
