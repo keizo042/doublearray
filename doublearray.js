@@ -16,6 +16,10 @@
     MEMORY_EXPAND_RATIO = 2;
 
 
+  class BC{
+    constructor(){
+    }
+  }
   const newBC = (initial_size) => {
 
     if (initial_size == null) {
