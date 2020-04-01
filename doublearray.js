@@ -192,9 +192,11 @@ const newBC = (initial_size) => {
 /**
  * Factory method of double array
  */
-function DoubleArrayBuilder(initial_size) {
-  this.bc = newBC(initial_size);  // BASE and CHECK
-  this.keys = [];
+class DoubleArrayBuilder {
+  constructor(initial_size){
+    this.bc = newBC(initial_size);  // BASE and CHECK
+    this.keys = [];
+  }
 }
 
 
