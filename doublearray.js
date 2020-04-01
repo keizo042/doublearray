@@ -557,16 +557,10 @@
 
         let base = this.bc.getBase(grand_child);
 
-        let r = {};
-
-        if (base <= 0) {
-          // If child is a leaf node, add record to result
-          r.v = - base - 1;
-        }
-
-        // If child is a leaf node, add word to result
-        r.k = utf8BytesToString(arrayCopy(buffer, 0, i + 1));
-
+        const r = {
+          v: (base <= 0) ? (- base - 1) : undefined,
+          k: utf8BytesToString(arrayCopy(buffer, 0, i + 1))
+        };
         result.push(r);
         continue;
       }
