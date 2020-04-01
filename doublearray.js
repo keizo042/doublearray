@@ -40,7 +40,7 @@
 
       // init CHECK
       BC.initCheck(check.array, ROOT_ID + 1, check.array.length);
-      this.base =base;
+      this.base = base;
       this.check = check;
       this.first_unused_node = first_unused_node;
     }
