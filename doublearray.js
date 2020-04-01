@@ -99,33 +99,39 @@
     size(){
       return Math.max(this.base.array.length, this.check.array.length);
     }
+
     getBase (index) {
       if (this.base.array.length - 1 < index) {
         return - index + 1;
       }
       return this.base.array[index];
     }
+
     getCheck(index) {
       if (this.check.array.length - 1 < index) {
         return - index - 1;
       }
       return this.check.array[index];
     }
+
     setBase(index, base_value) {
       if (this.base.array.length - 1 < index) {
         BC.realloc(index, this.base, check);
       }
       this.base.array[index] = base_value;
     }
+
     setCheck (index, check_value) {
       if (this.check.array.length - 1 < index) {
         BC.realloc(index, this.base, this.check);
       }
       this.check.array[index] = check_value;
     }
+
     setFirstUnusedNode (index) {
       this.first_unused_node = index;
     }
+
     getFirstUnusedNode () {
       return this.first_unused_node;
     }
