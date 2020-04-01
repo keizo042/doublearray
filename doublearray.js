@@ -21,7 +21,7 @@
             initial_size = 1024;
         }
 
-        let initBase = function (_base, start, end) {  // 'end' index does not include
+        const initBase =  (_base, start, end) =>  {  // 'end' index does not include
             for (let i = start; i < end; i++) {
                 _base[i] = - i + 1;  // inversed previous empty node index
             }
